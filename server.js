@@ -17,6 +17,10 @@ const VALID_CODES = new Set([
   "GLOW-STAR-0003",
   "GLOW-STAR-0004",
   "GLOW-STAR-0005",
+"GLOW-TEST-0001",
+"GLOW-TEST-0002",
+"GLOW-TEST-0003",
+
 ]);
 
 const USED_CODES = new Set();
