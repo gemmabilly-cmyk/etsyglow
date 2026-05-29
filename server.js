@@ -33,7 +33,7 @@ app.post("/api/verify", (req, res) => {
 
 // ── Proxy to Google Gemini (keeps API key hidden) ────────────────────
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`;
 
 const SYSTEM_PROMPT = `You are EtsyGlow, an expert Etsy SEO and listing audit assistant. Respond ONLY with a raw JSON object — no markdown, no backticks, no explanation before or after. Use exactly this structure:
 {"overallScore":85,"verdict":"One encouraging sentence here.","categories":{"titles":{"score":90,"status":"Excellent","tip":"Specific tip here."},"keywords":{"score":78,"status":"Good","tip":"Specific tip here."},"photos":{"score":75,"status":"Good","tip":"Specific tip here."},"seo":{"score":72,"status":"Needs Work","tip":"Specific tip here."},"structure":{"score":80,"status":"Good","tip":"Specific tip here."}},"hurting":["Issue one","Issue two","Issue three"],"working":["Strength one","Strength two"],"improve":["Improvement one","Improvement two","Improvement three"],"doNotChange":["Keep this one","Keep this two"]}`;
