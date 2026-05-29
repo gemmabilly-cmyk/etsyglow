@@ -10,26 +10,22 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// ── Access codes — add one per customer ─────────────────────────────
 const VALID_CODES = new Set([
   "GLOW-STAR-0001",
   "GLOW-STAR-0002",
   "GLOW-STAR-0003",
   "GLOW-STAR-0004",
   "GLOW-STAR-0005",
-"GLOW-TEST-0001",
-"GLOW-TEST-0002",
-"GLOW-TEST-0003",
-"GLOW-MOON-0001",
-"GLOW-MOON-0002",
-"GLOW-MOON-0003",
-
-
+  "GLOW-TEST-0001",
+  "GLOW-TEST-0002",
+  "GLOW-TEST-0003",
+  "GLOW-MOON-0001",
+  "GLOW-MOON-0002",
+  "GLOW-MOON-0003",
 ]);
 
 const USED_CODES = new Set();
 
-// ── Verify access code ───────────────────────────────────────────────
 app.post("/api/verify", (req, res) => {
   const { code } = req.body;
   const clean = (code || "").trim().toUpperCase();
@@ -39,11 +35,10 @@ app.post("/api/verify", (req, res) => {
   res.json({ ok: true });
 });
 
-// ── Proxy to Google Gemini (keeps API key hidden) ────────────────────
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_KEY}`;
 
-const SYSTEM_PROMPT = \You are EtsyGlow, an expert Etsy SEO and listing audit assistant. Respond ONLY with a raw JSON object. For every low score or issue, you MUST provide a specific rewritten example the seller can copy straight into Etsy. Never give vague advice. Always say “try: [specific example]”. Use this exact JSON structure: {“overallScore”:85,“verdict”:“Encouraging sentence here.”,“categories”:{“titles”:{“score”:90,“status”:“Excellent”,“tip”:“Your tip — try: Handmade Soy Candle Gift Set | Lavender Scented Birthday Gift for Her”},“keywords”:{“score”:78,“status”:“Good”,“tip”:“Your tip — try: add keywords like handmade gift, personalised, eco friendly”},“photos”:{“score”:75,“status”:“Good”,“tip”:“Your specific photo tip here”},“seo”:{“score”:72,“status”:“Needs Work”,“tip”:“Your specific SEO tip here”},“structure”:{“score”:80,“status”:“Good”,“tip”:“Your specific structure tip here”}},“hurting”:[“Problem — try: specific fix”,“Problem — try: specific fix”],“working”:[“Strength one”,“Strength two”],“improve”:[“Improve this — try: specific example”,“Improve this — try: specific example”],“doNotChange”:[“Keep this”,“Keep this”]}``
+const SYSTEM_PROMPT = "You are EtsyGlow, an expert Etsy SEO and listing audit assistant. Respond ONLY with a raw JSON object, no markdown, no backticks. For every issue found, include a specific rewritten example the seller can copy directly into Etsy. Never give vague advice. Always include try: followed by a specific example. Use exactly this JSON structure: {\"overallScore\":85,\"verdict\":\"One encouraging sentence.\",\"categories\":{\"titles\":{\"score\":90,\"status\":\"Excellent\",\"tip\":\"Specific tip — try: Handmade Soy Candle Gift Set | Lavender Scented Birthday Gift for Her\"},\"keywords\":{\"score\":78,\"status\":\"Good\",\"tip\":\"Specific tip — try: add tags like personalised gift, handmade, eco friendly candle\"},\"photos\":{\"score\":75,\"status\":\"Good\",\"tip\":\"Specific photo tip here\"},\"seo\":{\"score\":72,\"status\":\"Needs Work\",\"tip\":\"Specific SEO tip here\"},\"structure\":{\"score\":80,\"status\":\"Good\",\"tip\":\"Specific structure tip here\"}},\"hurting\":[\"Problem — try: specific rewrite\",\"Problem — try: specific rewrite\",\"Problem — try: specific rewrite\"],\"working\":[\"Strength one\",\"Strength two\"],\"improve\":[\"Improve this — try: specific example\",\"Improve this — try: specific example\",\"Improve this — try: specific example\"],\"doNotChange\":[\"Keep this one\",\"Keep this two\"]}";
 
 app.post("/api/audit", async (req, res) => {
   const { message } = req.body;
