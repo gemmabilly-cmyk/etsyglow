@@ -49,6 +49,8 @@ app.post("/api/audit", async (req, res) => {
     });
     const data = await response.json();
     let text = data.choices?.[0]?.message?.content || "";
+    console.log("AI RAW RESPONSE:", text);
+
 text = text.replace(/```json/g, "").replace(/```/g, "").trim();
 const match = text.match(/\{[\s\S]*\}/);
 if (match) text = match[0];
