@@ -48,10 +48,12 @@ app.post("/api/audit", async (req, res) => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ parts: [{ text: message }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
-      }),
+  contents: [
+    { role: "user", parts: [{ text: SYSTEM_PROMPT + "\n\n" + message }] }
+  ],
+  generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
+}),
+
     });
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
