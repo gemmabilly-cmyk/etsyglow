@@ -36,7 +36,8 @@ app.post("/api/verify", (req, res) => {
 });
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+
 
 const SYSTEM_PROMPT = "You are EtsyGlow, an expert Etsy SEO and listing audit assistant. Respond ONLY with a raw JSON object, no markdown, no backticks. For every issue found, include a specific rewritten example the seller can copy directly into Etsy. Never give vague advice. Always include try: followed by a specific example. Use exactly this JSON structure: {\"overallScore\":85,\"verdict\":\"One encouraging sentence.\",\"categories\":{\"titles\":{\"score\":90,\"status\":\"Excellent\",\"tip\":\"Specific tip — try: Handmade Soy Candle Gift Set | Lavender Scented Birthday Gift for Her\"},\"keywords\":{\"score\":78,\"status\":\"Good\",\"tip\":\"Specific tip — try: add tags like personalised gift, handmade, eco friendly candle\"},\"photos\":{\"score\":75,\"status\":\"Good\",\"tip\":\"Specific photo tip here\"},\"seo\":{\"score\":72,\"status\":\"Needs Work\",\"tip\":\"Specific SEO tip here\"},\"structure\":{\"score\":80,\"status\":\"Good\",\"tip\":\"Specific structure tip here\"}},\"hurting\":[\"Problem — try: specific rewrite\",\"Problem — try: specific rewrite\",\"Problem — try: specific rewrite\"],\"working\":[\"Strength one\",\"Strength two\"],\"improve\":[\"Improve this — try: specific example\",\"Improve this — try: specific example\",\"Improve this — try: specific example\"],\"doNotChange\":[\"Keep this one\",\"Keep this two\"]}";
 
