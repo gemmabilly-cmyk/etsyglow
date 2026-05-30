@@ -45,20 +45,28 @@ app.post("/api/audit", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "No message provided." });
   try {
-    const response = await fetch(GEMINI_URL, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-  system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-  contents: [{ role: "user", parts: [{ text: message }] }],
-  generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
-}),
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${process.env.GEMINI_API_KEY}`
+  },
+  body: JSON.stringify({
+    model: "meta-llama/llama-3.1-8b-instruct:free",
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: message }
+    ]
+  })
+});
+
 
 
     });
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const text = data.choices?.[0]?.message?.content || "";
+
     res.json({ text });
   } catch (e) {
     res.status(500).json({ error: e.message });
