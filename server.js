@@ -32,30 +32,24 @@ app.post("/api/audit", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "No message provided." });
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.GEMINI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "google/gemma-3-4b-it:free",
-
-
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: message }
-        ]
-      })
-    });
-    const data = await response.json();
-    let text = data.choices?.[0]?.message?.content || "";
-    console.log("AI RAW RESPONSE:", text);
-
-text = text.replace(/```json/g, "").replace(/```/g, "").trim();
-const match = text.match(/\{[\s\S]*\}/);
-if (match) text = match[0];
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": process.env.GEMINI_API_KEY,
+    "anthropic-version": "2023-06-01"
+  },
+  body: JSON.stringify({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 1024,
+    system: SYSTEM_PROMPT,
+    messages: [{ role: "user", content: message }]
+  })
+});
+const data = await response.json();
+const text = data.content?.[0]?.text || "";
 res.json({ text });
+
 
 
   } catch (e) {
