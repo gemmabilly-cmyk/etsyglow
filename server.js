@@ -49,9 +49,11 @@ app.post("/api/audit", async (req, res) => {
     });
     const data = await response.json();
     let text = data.choices?.[0]?.message?.content || "";
+text = text.replace(/```json/g, "").replace(/```/g, "").trim();
 const match = text.match(/\{[\s\S]*\}/);
 if (match) text = match[0];
 res.json({ text });
+
 
   } catch (e) {
     res.status(500).json({ error: e.message });
